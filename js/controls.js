@@ -101,7 +101,7 @@ var Controls = (function() {
             if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' ||
                 e.target.tagName === 'SELECT' || e.target.tagName === 'LABEL' ||
                 e.target.tagName === 'A' || e.target.closest('.gb-controls') ||
-                e.target.closest('.ss-container')) return;
+                e.target.closest('.ss-container') || e.target.closest('.overlay')) return;
             var t = e.touches[0];
             inputMode = 'touch';
             touchStartX = t.clientX;
@@ -122,7 +122,7 @@ var Controls = (function() {
             if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' ||
                 e.target.tagName === 'SELECT' || e.target.tagName === 'LABEL' ||
                 e.target.tagName === 'A' || e.target.closest('.gb-controls') ||
-                e.target.closest('.ss-container')) return;
+                e.target.closest('.ss-container') || e.target.closest('.overlay')) return;
             var t = e.changedTouches[0];
             var dx = t.clientX - touchStartX;
             var dy = t.clientY - touchStartY;
