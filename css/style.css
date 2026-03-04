@@ -376,8 +376,8 @@ input[type="range"]::-moz-range-thumb {
 
 .dpad {
     display: grid;
-    grid-template-columns: 40px 40px 40px;
-    grid-template-rows: 40px 40px 40px;
+    grid-template-columns: 56px 56px 56px;
+    grid-template-rows: 56px 56px 56px;
     gap: 0;
     position: relative;
 }
@@ -386,7 +386,7 @@ input[type="range"]::-moz-range-thumb {
     background: #3a3a3a;
     color: #888;
     border: none;
-    font-size: 14px;
+    font-size: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -438,7 +438,7 @@ input[type="range"]::-moz-range-thumb {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 12px; height: 12px;
+    width: 16px; height: 16px;
     background: #444;
     border-radius: 50%;
 }
@@ -450,7 +450,7 @@ input[type="range"]::-moz-range-thumb {
 
 .ab-buttons {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     transform: rotate(-20deg);
 }
 
@@ -462,12 +462,12 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .gb-round-btn {
-    width: 48px;
-    height: 48px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
     border: none;
     font-family: monospace;
-    font-size: 16px;
+    font-size: 20px;
     font-weight: bold;
     cursor: pointer;
     touch-action: manipulation;
@@ -496,7 +496,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .ab-label {
-    font-size: 9px;
+    font-size: 10px;
     color: #666;
     font-weight: bold;
     letter-spacing: 1px;
@@ -507,7 +507,7 @@ input[type="range"]::-moz-range-thumb {
 .ss-container {
     display: flex;
     justify-content: center;
-    gap: 24px;
+    gap: 32px;
     padding: 8px 0 0;
 }
 
@@ -519,9 +519,9 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .ss-btn {
-    width: 40px;
-    height: 12px;
-    border-radius: 6px;
+    width: 52px;
+    height: 16px;
+    border-radius: 8px;
     background: #6a6a6a;
     border: none;
     cursor: pointer;
@@ -536,7 +536,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .ss-label {
-    font-size: 8px;
+    font-size: 9px;
     color: #666;
     font-weight: bold;
     letter-spacing: 2px;
@@ -605,13 +605,13 @@ input[type="range"]::-moz-range-thumb {
         width: 90%;
     }
     .dpad {
-        grid-template-columns: 36px 36px 36px;
-        grid-template-rows: 36px 36px 36px;
+        grid-template-columns: 50px 50px 50px;
+        grid-template-rows: 50px 50px 50px;
     }
     .gb-round-btn {
-        width: 42px;
-        height: 42px;
-        font-size: 14px;
+        width: 56px;
+        height: 56px;
+        font-size: 18px;
     }
     .gb-controls {
         padding: 10px 4px 2px;
@@ -639,15 +639,15 @@ input[type="range"]::-moz-range-thumb {
         min-width: 130px;
     }
     .dpad {
-        grid-template-columns: 32px 32px 32px;
-        grid-template-rows: 32px 32px 32px;
+        grid-template-columns: 44px 44px 44px;
+        grid-template-rows: 44px 44px 44px;
     }
     .gb-round-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 13px;
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
     }
     .ab-buttons {
-        gap: 8px;
+        gap: 10px;
     }
 }
