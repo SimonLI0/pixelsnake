@@ -63,6 +63,13 @@ var I18n = (function() {
             'language': '语言',
             'lang-zh': '中文',
             'lang-en': 'English',
+            // Settings — skin
+            'skin': '🎨 皮肤',
+            'skin-classic': '经典 Game Boy',
+            'skin-neon': '霓虹',
+            'skin-retro': '复古 NES',
+            'skin-dark': '暗黑',
+            'skin-ocean': '海洋',
             // Stats bubble
             'stats-best': '🏅 最高分: ',
             'stats-rank': '🌍 世界排名 #',
@@ -130,6 +137,13 @@ var I18n = (function() {
             'language': 'Language',
             'lang-zh': '中文',
             'lang-en': 'English',
+            // Settings — skin
+            'skin': '🎨 Skin',
+            'skin-classic': 'Classic Game Boy',
+            'skin-neon': 'Neon',
+            'skin-retro': 'Retro NES',
+            'skin-dark': 'Dark',
+            'skin-ocean': 'Ocean',
             // Stats bubble
             'stats-best': '🏅 Best: ',
             'stats-rank': '🌍 World Rank #',

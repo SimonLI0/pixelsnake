@@ -537,6 +537,19 @@ var Game = (function() {
             playBeep(523, 0.08);
         });
 
+        // Settings: skin
+        var skinSelect = document.getElementById('setting-skin');
+        if (skinSelect) {
+            var savedSkin = 'classic';
+            try { savedSkin = localStorage.getItem('snake_skin') || 'classic'; } catch(e) {}
+            skinSelect.value = savedSkin;
+            skinSelect.addEventListener('change', function() {
+                SpriteSheet.applySkin(this.value);
+                renderer = new Renderer(ctx);
+                renderer.clear();
+            });
+        }
+
         // Enter key to restart after game over, Space to pause
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {

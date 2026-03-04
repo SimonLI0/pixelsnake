@@ -6,7 +6,7 @@ var Renderer = (function() {
     Renderer.prototype.clear = function() {
         var ctx = this.ctx;
         var canvas = ctx.canvas;
-        // Game Boy green background
+        // Background
         ctx.fillStyle = COLORS.BACKGROUND;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -23,15 +23,31 @@ var Renderer = (function() {
 
     Renderer.prototype.drawSnake = function(snake) {
         var ctx = this.ctx;
-        for (var i = 0; i < snake.body.length; i++) {
-            var seg = snake.body[i];
-            var px = seg.x * GRID_SIZE;
-            var py = seg.y * GRID_SIZE;
+        var gs = GRID_SIZE;
+        var body = snake.body;
+
+        // Use sprite sheet if available
+        if (typeof SpriteSheet !== 'undefined' && SpriteSheet.isReady()) {
+            for (var i = 0; i < body.length; i++) {
+                var seg = body[i];
+                var px = seg.x * gs;
+                var py = seg.y * gs;
+                var sprite = SpriteSheet.getSegmentSprite(body, i, snake.direction);
+                SpriteSheet.draw(ctx, sprite, px, py, gs);
+            }
+            return;
+        }
+
+        // Fallback: original rectangle rendering
+        for (var i = 0; i < body.length; i++) {
+            var seg = body[i];
+            var px = seg.x * gs;
+            var py = seg.y * gs;
 
             if (i === 0) {
                 // Head - darker, with eyes
                 ctx.fillStyle = COLORS.SNAKE_HEAD;
-                ctx.fillRect(px + 1, py + 1, GRID_SIZE - 2, GRID_SIZE - 2);
+                ctx.fillRect(px + 1, py + 1, gs - 2, gs - 2);
                 // Eyes
                 ctx.fillStyle = COLORS.BACKGROUND;
                 var ex1, ey1, ex2, ey2;
@@ -44,26 +60,34 @@ var Renderer = (function() {
             } else {
                 // Body
                 ctx.fillStyle = COLORS.SNAKE_BODY;
-                ctx.fillRect(px + 1, py + 1, GRID_SIZE - 2, GRID_SIZE - 2);
+                ctx.fillRect(px + 1, py + 1, gs - 2, gs - 2);
             }
         }
     };
 
     Renderer.prototype.drawFood = function(food) {
         var ctx = this.ctx;
-        var px = food.position.x * GRID_SIZE;
-        var py = food.position.y * GRID_SIZE;
+        var gs = GRID_SIZE;
+        var px = food.position.x * gs;
+        var py = food.position.y * gs;
+
+        // Use sprite sheet if available
+        if (typeof SpriteSheet !== 'undefined' && SpriteSheet.isReady()) {
+            SpriteSheet.draw(ctx, 'food', px, py, gs);
+            return;
+        }
+
+        // Fallback: original apple rendering
         ctx.fillStyle = COLORS.FOOD;
-        // Apple shape
         ctx.beginPath();
-        ctx.arc(px + GRID_SIZE/2, py + GRID_SIZE/2 + 1, GRID_SIZE/2 - 2, 0, Math.PI * 2);
+        ctx.arc(px + gs/2, py + gs/2 + 1, gs/2 - 2, 0, Math.PI * 2);
         ctx.fill();
         // Stem
         ctx.strokeStyle = '#2E7D32';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(px + GRID_SIZE/2, py + 2);
-        ctx.lineTo(px + GRID_SIZE/2 + 2, py - 1);
+        ctx.moveTo(px + gs/2, py + 2);
+        ctx.lineTo(px + gs/2 + 2, py - 1);
         ctx.stroke();
     };
 
