@@ -90,23 +90,27 @@ canvas {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
     background: rgba(155, 188, 15, 0.97);
     border-radius: 4px;
     z-index: 10;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 16px 12px;
+    padding: 8px 12px;
     -webkit-overflow-scrolling: touch;
 }
 
+/* Hide scrollbar but still allow scroll when really needed */
+.overlay::-webkit-scrollbar { width: 0; display: none; }
+.overlay { scrollbar-width: none; -ms-overflow-style: none; }
+
 /* Menu Screen */
 .menu-title {
-    font-size: 26px;
+    font-size: 22px;
     font-weight: bold;
     color: #0F380F;
     text-shadow: 2px 2px 0 #306230;
-    margin-bottom: 10px;
+    margin-bottom: 2px;
     letter-spacing: 2px;
 }
 
@@ -114,14 +118,14 @@ canvas {
     background: #0F380F;
     color: #9BBC0F;
     border: none;
-    padding: 12px 36px;
-    font-size: 16px;
+    padding: 8px 28px;
+    font-size: 14px;
     font-family: monospace;
     font-weight: bold;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.15s;
-    min-width: 200px;
+    min-width: 180px;
     letter-spacing: 1px;
 }
 
@@ -139,9 +143,9 @@ canvas {
 }
 
 .menu-hint {
-    font-size: 11px;
+    font-size: 10px;
     color: #306230;
-    margin-top: 10px;
+    margin-top: 2px;
 }
 
 /* Settings Panel */
@@ -468,16 +472,16 @@ input[type="range"]::-moz-range-thumb {
 /* Stats Bubble on Home */
 .stats-bubble {
     background: rgba(15, 56, 15, 0.12);
-    border: 2px solid #306230;
-    border-radius: 10px;
-    padding: 8px 14px;
-    font-size: 12px;
+    border: 1px solid #306230;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 11px;
     font-family: monospace;
     color: #0F380F;
     text-align: center;
-    line-height: 1.5;
+    line-height: 1.4;
     position: relative;
-    max-width: 260px;
+    max-width: 240px;
 }
 
 .stats-bubble::after {
@@ -499,13 +503,13 @@ input[type="range"]::-moz-range-thumb {
 
 .stats-bubble .stats-score {
     font-weight: bold;
-    font-size: 16px;
+    font-size: 13px;
     color: #0F380F;
 }
 
 .stats-bubble .stats-rank {
     color: #306230;
-    font-size: 11px;
+    font-size: 10px;
 }
 
 /* Wild-only settings: hidden in standard mode */
