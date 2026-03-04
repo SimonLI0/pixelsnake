@@ -11,7 +11,7 @@ var Leaderboard = (function() {
         if (host === 'localhost' || host === '127.0.0.1') {
             return 'http://localhost:3001';
         }
-        // On VPS (72.61.1.189 or sslip.io domain) — use same origin, nginx proxies /api/
+        // On VPS (sslip.io domain or direct) — use same origin, nginx proxies /api/
         return '';
     })();
 
