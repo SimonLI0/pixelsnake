@@ -405,10 +405,13 @@ input[type="range"]::-moz-range-thumb {
     display: flex;
     align-items: center;
     gap: 6px;
+    width: 100%;
+    max-width: 220px;
 }
 
 .mode-btn {
     flex: 1;
+    min-width: 0;
 }
 
 .mode-info-icon {
