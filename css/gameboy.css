@@ -1,0 +1,36 @@
+body {
+    background-color: #a8c0b0;
+    font-family: 'Press Start 2P', cursive;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.canvas-container {
+    border: 4px solid #000;
+    background-color: #e0e0e0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.canvas {
+    image-rendering: pixelated;
+    width: 320px; /* Adjust based on your game dimensions */
+    height: 320px; /* Adjust based on your game dimensions */
+}
+
+.button {
+    background-color: #fff;
+    border: 2px solid #000;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.button:active {
+    background-color: #ccc;
+}

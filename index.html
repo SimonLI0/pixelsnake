@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Pixel Snake Game</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-wrapper">
+        <!-- Game Boy Shell -->
+        <div class="gameboy-shell">
+            <div class="gameboy-header">DOT MATRIX WITH STEREO SOUND</div>
+            <div class="screen-bezel">
+                <canvas id="gameCanvas" width="320" height="320"></canvas>
+
+                <!-- Start Menu Overlay -->
+                <div id="menu-screen" class="overlay">
+                    <div class="menu-title">🐍 PIXEL SNAKE</div>
+                    <button id="btn-start" class="menu-btn">▶ 开始游戏</button>
+                    <button id="btn-settings" class="menu-btn menu-btn-secondary">⚙ 设置</button>
+                    <div class="menu-hint">键盘 ← ↑ ↓ → 或触屏滑动</div>
+                </div>
+
+                <!-- Settings Panel Overlay -->
+                <div id="settings-panel" class="overlay" style="display:none">
+                    <div class="settings-title">⚙ 设置</div>
+                    
+                    <div class="setting-row">
+                        <label>屏幕尺寸</label>
+                        <select id="setting-size">
+                            <option value="256x256">小 (256×256)</option>
+                            <option value="320x320" selected>中 (320×320)</option>
+                            <option value="480x480">大 (480×480)</option>
+                            <option value="640x640">超大 (640×640)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-row">
+                        <label>游戏速度</label>
+                        <select id="setting-speed">
+                            <option value="160">慢速</option>
+                            <option value="120" selected>正常</option>
+                            <option value="80">快速</option>
+                            <option value="50">地狱</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-row">
+                        <label>音量 <span id="volume-value">50%</span></label>
+                        <input type="range" id="setting-volume" min="0" max="1" step="0.05" value="0.5">
+                    </div>
+
+                    <button id="btn-back" class="menu-btn">← 返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils/constants.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/snake.js"></script>
+    <script src="js/food.js"></script>
+    <script src="js/controls.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
