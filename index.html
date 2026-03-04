@@ -21,6 +21,12 @@
             <div class="screen-bezel">
                 <canvas id="gameCanvas" width="320" height="320"></canvas>
 
+                <!-- Pause Overlay -->
+                <div id="pause-overlay">
+                    <div class="pause-text">PAUSED</div>
+                    <div class="pause-hint">按 B 或 START 继续</div>
+                </div>
+
                 <!-- Start Menu Overlay -->
                 <div id="menu-screen" class="overlay">
                     <div class="menu-title">🐍 PIXEL SNAKE</div>
@@ -28,7 +34,7 @@
                     <button id="btn-start" class="menu-btn">▶ 开始游戏</button>
                     <button id="btn-leaderboard" class="menu-btn menu-btn-secondary">🏆 世界排行</button>
                     <button id="btn-settings" class="menu-btn menu-btn-secondary">⚙ 设置</button>
-                    <div class="menu-hint">键盘 ← ↑ ↓ → 或触屏滑动</div>
+                    <div class="menu-hint">D-pad / 键盘 / 触屏滑动控制方向</div>
                 </div>
 
                 <!-- Nickname Input Overlay -->
@@ -93,6 +99,46 @@
                     </div>
 
                     <button id="btn-back" class="menu-btn">← 返回</button>
+                </div>
+            </div>
+
+            <!-- Game Boy Controls -->
+            <div class="gb-controls">
+                <!-- D-Pad -->
+                <div class="dpad-container">
+                    <div class="dpad">
+                        <button class="dpad-btn dpad-up" id="dpad-up" aria-label="Up">▲</button>
+                        <button class="dpad-btn dpad-left" id="dpad-left" aria-label="Left">◀</button>
+                        <div class="dpad-center"></div>
+                        <button class="dpad-btn dpad-right" id="dpad-right" aria-label="Right">▶</button>
+                        <button class="dpad-btn dpad-down" id="dpad-down" aria-label="Down">▼</button>
+                    </div>
+                </div>
+
+                <!-- A B Buttons -->
+                <div class="ab-container">
+                    <div class="ab-buttons">
+                        <div class="ab-btn-wrap">
+                            <button class="gb-round-btn btn-b" id="btn-B" aria-label="B">B</button>
+                            <span class="ab-label">暂停</span>
+                        </div>
+                        <div class="ab-btn-wrap">
+                            <button class="gb-round-btn btn-a" id="btn-A" aria-label="A">A</button>
+                            <span class="ab-label">加速</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SELECT / START -->
+            <div class="ss-container">
+                <div class="ss-btn-wrap">
+                    <button class="ss-btn" id="btn-SELECT" aria-label="Select"></button>
+                    <span class="ss-label">SELECT</span>
+                </div>
+                <div class="ss-btn-wrap">
+                    <button class="ss-btn" id="btn-START" aria-label="Start"></button>
+                    <span class="ss-label">START</span>
                 </div>
             </div>
         </div>

@@ -6,7 +6,12 @@ var Game = (function() {
     var snake, food;
     var gameLoop = null;
     var score = 0;
-    var state = 'menu'; // menu | playing | gameover
+    var state = 'menu'; // menu | playing | paused | gameover
+
+    // --- Boost (A button) ---
+    var normalSpeed = GAME_SPEED;
+    var boostActive = false;
+    var BOOST_FACTOR = 0.4; // 40% of normal interval = much faster
 
     // --- Audio (Web Audio API for short beeps) ---
     var audioCtx = null;
@@ -132,10 +137,11 @@ var Game = (function() {
                        (window.innerWidth <= 640 && 'ontouchstart' in window);
         if (!isMobile) return;
 
-        // Available space: viewport minus gameboy shell overhead (~80px padding + bezel)
-        var shellPad = 60; // approximate total vertical padding from shell + bezel
+        // Available space: viewport minus gameboy shell + controls overhead
+        var shellPad = 60; // shell padding + bezel
+        var controlsHeight = 160; // d-pad + select/start area
         var availW = window.innerWidth - shellPad;
-        var availH = window.innerHeight - shellPad - 40; // extra margin
+        var availH = window.innerHeight - shellPad - controlsHeight;
         var avail = Math.min(availW, availH);
 
         var bestSize = 256;
@@ -180,6 +186,8 @@ var Game = (function() {
 
     function startGame() {
         score = 0;
+        normalSpeed = GAME_SPEED;
+        boostActive = false;
         snake = new Snake();
         food = new Food();
         food.spawn(snake.body);
@@ -192,6 +200,7 @@ var Game = (function() {
         hideMenu();
         hideSettings();
         hideGameOver();
+        hidePause();
         state = 'playing';
         if (gameLoop) clearInterval(gameLoop);
         gameLoop = setInterval(tick, GAME_SPEED);
@@ -229,6 +238,42 @@ var Game = (function() {
         }
 
         render();
+    }
+
+    // --- Pause ---
+    function showPause() { document.getElementById('pause-overlay').style.display = 'flex'; }
+    function hidePause() { document.getElementById('pause-overlay').style.display = 'none'; }
+
+    function togglePause() {
+        if (state === 'playing') {
+            state = 'paused';
+            if (gameLoop) { clearInterval(gameLoop); gameLoop = null; }
+            showPause();
+        } else if (state === 'paused') {
+            state = 'playing';
+            hidePause();
+            if (!gameLoop) {
+                var speed = boostActive ? Math.round(normalSpeed * BOOST_FACTOR) : normalSpeed;
+                gameLoop = setInterval(tick, speed);
+            }
+        }
+    }
+
+    // --- Boost (A button hold) ---
+    function startBoost() {
+        if (state !== 'playing' || boostActive) return;
+        boostActive = true;
+        if (gameLoop) clearInterval(gameLoop);
+        gameLoop = setInterval(tick, Math.round(normalSpeed * BOOST_FACTOR));
+    }
+
+    function stopBoost() {
+        if (!boostActive) return;
+        boostActive = false;
+        if (state === 'playing') {
+            if (gameLoop) clearInterval(gameLoop);
+            gameLoop = setInterval(tick, normalSpeed);
+        }
     }
 
     function render() {
@@ -286,7 +331,11 @@ var Game = (function() {
         });
         document.getElementById('btn-back').addEventListener('click', function() {
             hideSettings();
-            showMenu();
+            if (state === 'paused') {
+                togglePause(); // resume game
+            } else {
+                showMenu();
+            }
         });
 
         // Leaderboard buttons
@@ -312,6 +361,77 @@ var Game = (function() {
             hideGameOver();
             showMenu();
         });
+
+        // Game Boy buttons: A (boost), B (pause), START, SELECT
+        function setupHoldButton(id, onDown, onUp) {
+            var btn = document.getElementById(id);
+            if (!btn) return;
+            btn.addEventListener('touchstart', function(e) {
+                e.preventDefault(); e.stopPropagation();
+                btn.classList.add('active');
+                if (onDown) onDown();
+            }, { passive: false });
+            btn.addEventListener('touchend', function(e) {
+                e.preventDefault(); e.stopPropagation();
+                btn.classList.remove('active');
+                if (onUp) onUp();
+            }, { passive: false });
+            btn.addEventListener('touchcancel', function() {
+                btn.classList.remove('active');
+                if (onUp) onUp();
+            });
+            btn.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                btn.classList.add('active');
+                if (onDown) onDown();
+            });
+            btn.addEventListener('mouseup', function() {
+                btn.classList.remove('active');
+                if (onUp) onUp();
+            });
+            btn.addEventListener('mouseleave', function() {
+                btn.classList.remove('active');
+                if (onUp) onUp();
+            });
+        }
+
+        // A = boost (hold to accelerate)
+        setupHoldButton('btn-A', startBoost, stopBoost);
+
+        // B = pause/resume
+        setupHoldButton('btn-B', function() {
+            if (state === 'playing' || state === 'paused') {
+                togglePause();
+            }
+        }, null);
+
+        // START = start game / restart / resume
+        setupHoldButton('btn-START', function() {
+            if (state === 'menu') {
+                startGame();
+            } else if (state === 'gameover') {
+                restart();
+            } else if (state === 'paused') {
+                togglePause();
+            }
+        }, null);
+
+        // SELECT = go to menu / settings
+        setupHoldButton('btn-SELECT', function() {
+            if (state === 'playing') {
+                // Pause first, then show menu
+                state = 'paused';
+                if (gameLoop) { clearInterval(gameLoop); gameLoop = null; }
+                hidePause();
+                showMenu();
+            } else if (state === 'paused') {
+                hidePause();
+                showMenu();
+            } else if (state === 'gameover') {
+                hideGameOver();
+                showMenu();
+            }
+        }, null);
 
         // Nickname buttons
         document.getElementById('btn-save-nick').addEventListener('click', function() {
@@ -346,6 +466,7 @@ var Game = (function() {
         var speedSelect = document.getElementById('setting-speed');
         speedSelect.addEventListener('change', function() {
             GAME_SPEED = parseInt(this.value);
+            normalSpeed = GAME_SPEED;
         });
 
         // Settings: volume
@@ -359,13 +480,21 @@ var Game = (function() {
             playBeep(523, 0.08);
         });
 
-        // Enter key to restart after game over
+        // Enter key to restart after game over, Space to pause
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 if (state === 'gameover') {
                     restart();
                 } else if (state === 'menu') {
                     startGame();
+                } else if (state === 'paused') {
+                    togglePause();
+                }
+            }
+            if (e.key === ' ' || e.key === 'Escape') {
+                if (state === 'playing' || state === 'paused') {
+                    togglePause();
+                    e.preventDefault();
                 }
             }
         });
@@ -378,7 +507,16 @@ var Game = (function() {
         });
     }
 
+    // When returning from menu while paused, resume
+    function resumeFromMenu() {
+        hideMenu();
+        hideSettings();
+        if (state === 'paused' && snake && snake.alive) {
+            togglePause();
+        }
+    }
+
     window.onload = init;
 
-    return { start: startGame, restart: restart };
+    return { start: startGame, restart: restart, getState: function() { return state; }, resumeFromMenu: resumeFromMenu };
 })();
