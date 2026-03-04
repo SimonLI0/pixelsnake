@@ -31,7 +31,29 @@
                 <div id="menu-screen" class="overlay">
                     <div class="menu-title">🐍 PIXEL SNAKE</div>
                     <div id="menu-player-info" class="player-info"></div>
-                    <button id="btn-start" class="menu-btn" data-i18n="start-game">▶ 开始游戏</button>
+
+                    <!-- Stats bubble (shown when player has records) -->
+                    <div id="menu-stats-bubble" class="stats-bubble" style="display:none"></div>
+
+                    <div class="mode-btn-row">
+                        <button id="btn-standard" class="menu-btn mode-btn">
+                            <span data-i18n="mode-standard">🏆 标准模式</span>
+                        </button>
+                        <span class="mode-info-icon" id="info-standard" title="">❓</span>
+                    </div>
+                    <div class="mode-btn-row">
+                        <button id="btn-wild" class="menu-btn mode-btn menu-btn-secondary">
+                            <span data-i18n="mode-wild">🎮 狂野模式</span>
+                        </button>
+                        <span class="mode-info-icon" id="info-wild" title="">❓</span>
+                    </div>
+
+                    <!-- Mode info tooltip (hidden by default) -->
+                    <div id="mode-info-popup" class="mode-info-popup" style="display:none">
+                        <div id="mode-info-text" class="mode-info-text"></div>
+                        <button id="mode-info-close" class="mode-info-close">✕</button>
+                    </div>
+
                     <button id="btn-leaderboard" class="menu-btn menu-btn-secondary" data-i18n="leaderboard-btn">🏆 世界排行</button>
                     <button id="btn-settings" class="menu-btn menu-btn-secondary" data-i18n="settings-btn">⚙ 设置</button>
                     <div class="menu-hint" data-i18n="menu-hint">D-pad / 键盘 / 触屏滑动控制方向</div>
@@ -73,7 +95,7 @@
                 <div id="settings-panel" class="overlay" style="display:none">
                     <div class="settings-title" data-i18n="settings-title">⚙ 设置</div>
                     
-                    <div class="setting-row">
+                    <div class="setting-row wild-only-setting" id="row-size">
                         <label data-i18n="screen-size">屏幕尺寸</label>
                         <select id="setting-size">
                             <option value="256x256" data-i18n="size-256">小 (256×256)</option>
@@ -83,7 +105,7 @@
                         </select>
                     </div>
 
-                    <div class="setting-row">
+                    <div class="setting-row wild-only-setting" id="row-speed">
                         <label data-i18n="game-speed">游戏速度</label>
                         <select id="setting-speed">
                             <option value="160" data-i18n="speed-160">慢速</option>

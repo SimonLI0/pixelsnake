@@ -16,6 +16,10 @@ var I18n = (function() {
         zh: {
             // Menu
             'start-game': '▶ 开始游戏',
+            'mode-standard': '🏆 标准模式',
+            'mode-wild': '🎮 狂野模式',
+            'info-standard': '📏 标准模式\n• 固定速度 & 地图大小\n• 所有玩家条件相同\n• 成绩计入世界排行榜\n• 为公平竞争而设计',
+            'info-wild': '🎉 狂野模式\n• 自由调整速度和地图大小\n• 无规则限制，随心所欲\n• 成绩单独记录\n• 纯粹享受游戏乐趣',
             'leaderboard-btn': '🏆 世界排行',
             'settings-btn': '⚙ 设置',
             'menu-hint': 'D-pad / 键盘 / 触屏滑动控制方向',
@@ -59,6 +63,16 @@ var I18n = (function() {
             'language': '语言',
             'lang-zh': '中文',
             'lang-en': 'English',
+            // Stats bubble
+            'stats-best': '🏅 最高分: ',
+            'stats-rank': '🌍 世界排名 #',
+            'stats-no-record': '还没有记录，快来挑战！',
+            // Leaderboard tabs
+            'lb-tab-standard': '🏆 标准',
+            'lb-tab-wild': '🎮 狂野',
+            // Game mode indicator
+            'mode-label-standard': '[ 标准模式 ]',
+            'mode-label-wild': '[ 狂野模式 ]',
             // Dynamic (game.js)
             'score-prefix': '🎯 得分: ',
             'rank-prefix': '🏆 世界排名 #',
@@ -69,6 +83,10 @@ var I18n = (function() {
         en: {
             // Menu
             'start-game': '▶ Start Game',
+            'mode-standard': '🏆 Standard',
+            'mode-wild': '🎮 Wild',
+            'info-standard': '📏 Standard Mode\n• Fixed speed & map size\n• Same conditions for all\n• Scores on world leaderboard\n• Designed for fair competition',
+            'info-wild': '🎉 Wild Mode\n• Customize speed & map size\n• No rules, play your way\n• Scores tracked separately\n• Pure fun, no pressure',
             'leaderboard-btn': '🏆 Leaderboard',
             'settings-btn': '⚙ Settings',
             'menu-hint': 'D-pad / Keyboard / Swipe to move',
@@ -112,6 +130,16 @@ var I18n = (function() {
             'language': 'Language',
             'lang-zh': '中文',
             'lang-en': 'English',
+            // Stats bubble
+            'stats-best': '🏅 Best: ',
+            'stats-rank': '🌍 World Rank #',
+            'stats-no-record': 'No record yet. Start playing!',
+            // Leaderboard tabs
+            'lb-tab-standard': '🏆 Standard',
+            'lb-tab-wild': '🎮 Wild',
+            // Game mode indicator
+            'mode-label-standard': '[ Standard ]',
+            'mode-label-wild': '[ Wild ]',
             // Dynamic (game.js)
             'score-prefix': '🎯 Score: ',
             'rank-prefix': '🏆 World Rank #',

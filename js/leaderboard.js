@@ -174,7 +174,9 @@ var Leaderboard = (function() {
             device_id: deviceId,
             score: score,
             speed: GAME_SPEED,
-            grid_size: CANVAS_WIDTH + 'x' + CANVAS_HEIGHT
+            grid_size: CANVAS_WIDTH + 'x' + CANVAS_HEIGHT,
+            game_mode: GAME_MODE,
+            input_mode: Controls.getInputMode()
         }, function(err, data) {
             if (!err && data) {
                 if (data.best_score) bestScore = data.best_score;
@@ -183,8 +185,9 @@ var Leaderboard = (function() {
         });
     }
 
-    function getLeaderboard(callback) {
-        apiGet('/api/leaderboard?limit=20', callback);
+    function getLeaderboard(gameMode, callback) {
+        var mode = gameMode || 'standard';
+        apiGet('/api/leaderboard?limit=20&game_mode=' + mode, callback);
     }
 
     function getMyStats(callback) {

@@ -59,7 +59,8 @@ var Game = (function() {
     function showNickname() { document.getElementById('nickname-panel').style.display = 'flex'; }
     function hideNickname() { document.getElementById('nickname-panel').style.display = 'none'; }
     function showGameOver(score, rank, isPersonalBest) {
-        document.getElementById('gameover-score').textContent = I18n.t('score-prefix') + score;
+        document.getElementById('gameover-score').textContent = I18n.t('score-prefix') + score +
+            '  ' + I18n.t(GAME_MODE === 'standard' ? 'mode-label-standard' : 'mode-label-wild');
         var rankEl = document.getElementById('gameover-rank');
         var bestEl = document.getElementById('gameover-best');
         if (rank) {
@@ -79,22 +80,40 @@ var Game = (function() {
     function updatePlayerInfo() {
         var el = document.getElementById('menu-player-info');
         if (Leaderboard.isRegistered()) {
-            el.innerHTML = '<span class="nick-label" id="nick-display">👤 ' + Leaderboard.getNickname() + '</span>' +
-                I18n.t('best-prefix') + Leaderboard.getBestScore();
+            el.innerHTML = '<span class="nick-label" id="nick-display">👤 ' + Leaderboard.getNickname() + '</span>';
             document.getElementById('nick-display').addEventListener('click', function() {
                 hideMenu();
                 document.getElementById('input-nickname').value = Leaderboard.getNickname();
                 showNickname();
             });
+            // Update stats bubble
+            updateStatsBubble();
         } else {
             el.textContent = I18n.t('connecting');
         }
     }
 
-    function loadLeaderboard() {
+    function updateStatsBubble() {
+        var bubble = document.getElementById('menu-stats-bubble');
+        if (!bubble) return;
+        Leaderboard.getMyStats(function(err, data) {
+            if (err || !data || !data.stats || !data.stats.best_score) {
+                bubble.style.display = 'none';
+                return;
+            }
+            var s = data.stats;
+            bubble.innerHTML =
+                '<span class="stats-line stats-score">' + I18n.t('stats-best') + s.best_score + '</span>' +
+                '<span class="stats-line stats-rank">' + I18n.t('stats-rank') + s.rank + '</span>';
+            bubble.style.display = 'block';
+        });
+    }
+
+    function loadLeaderboard(gameMode) {
+        var mode = gameMode || 'standard';
         var list = document.getElementById('leaderboard-list');
         list.innerHTML = '<div class="lb-loading">' + I18n.t('loading') + '</div>';
-        Leaderboard.getLeaderboard(function(err, data) {
+        Leaderboard.getLeaderboard(mode, function(err, data) {
             if (err || !data || !data.leaderboard) {
                 list.innerHTML = '<div class="lb-loading">' + I18n.t('load-error') + '</div>';
                 return;
@@ -183,6 +202,34 @@ var Game = (function() {
 
     // --- Core Game ---
     var controlsInitialized = false;
+
+    // --- Mode selection ---
+    function startStandard() {
+        GAME_MODE = 'standard';
+        // Force standard parameters
+        GAME_SPEED = STANDARD_SPEED;
+        normalSpeed = STANDARD_SPEED;
+        resizeCanvas(STANDARD_CANVAS, STANDARD_CANVAS);
+        renderer = new Renderer(ctx);
+        setTimeout(fitToScreen, 50);
+        startGame();
+    }
+
+    function startWild() {
+        GAME_MODE = 'wild';
+        // Use whatever the player set in settings
+        normalSpeed = GAME_SPEED;
+        startGame();
+    }
+
+    function updateSettingsVisibility() {
+        var wildRows = document.querySelectorAll('.wild-only-setting');
+        for (var i = 0; i < wildRows.length; i++) {
+            // Always show wild-only settings in settings panel —
+            // but add a note they only apply in wild mode
+            // We just keep them visible but labeled
+        }
+    }
 
     function startGame() {
         score = 0;
@@ -286,7 +333,11 @@ var Game = (function() {
 
     function restart() {
         hideGameOver();
-        startGame();
+        if (GAME_MODE === 'standard') {
+            startStandard();
+        } else {
+            startWild();
+        }
     }
 
     // --- Init ---
@@ -324,7 +375,8 @@ var Game = (function() {
         document.addEventListener('click', resumeAudio);
 
         // Button bindings
-        document.getElementById('btn-start').addEventListener('click', startGame);
+        document.getElementById('btn-standard').addEventListener('click', startStandard);
+        document.getElementById('btn-wild').addEventListener('click', startWild);
         document.getElementById('btn-settings').addEventListener('click', function() {
             hideMenu();
             showSettings();
@@ -338,16 +390,21 @@ var Game = (function() {
             }
         });
 
-        // Leaderboard buttons
+        // Leaderboard buttons & tabs
+        var lbTabMode = 'standard';
         document.getElementById('btn-leaderboard').addEventListener('click', function() {
             hideMenu();
-            loadLeaderboard();
+            lbTabMode = 'standard';
+            updateLbTabs();
+            loadLeaderboard('standard');
             showLeaderboard();
         });
         document.getElementById('btn-lb-back').addEventListener('click', function() {
             hideLeaderboard();
             showMenu();
         });
+        // No tab HTML needed — we add inline tab buttons dynamically
+        // (handled below in leaderboard panel)
 
         // Game Over buttons
         document.getElementById('btn-restart').addEventListener('click', function() {
@@ -405,10 +462,10 @@ var Game = (function() {
             }
         }, null);
 
-        // START = start game / restart / resume
+        // START = start standard / restart / resume
         setupHoldButton('btn-START', function() {
             if (state === 'menu') {
-                startGame();
+                startStandard();
             } else if (state === 'gameover') {
                 restart();
             } else if (state === 'paused') {
@@ -486,7 +543,7 @@ var Game = (function() {
                 if (state === 'gameover') {
                     restart();
                 } else if (state === 'menu') {
-                    startGame();
+                    startStandard();
                 } else if (state === 'paused') {
                     togglePause();
                 }
@@ -497,6 +554,62 @@ var Game = (function() {
                     e.preventDefault();
                 }
             }
+        });
+
+        // Mode info popups
+        var infoPopup = document.getElementById('mode-info-popup');
+        var infoText = document.getElementById('mode-info-text');
+        var infoClose = document.getElementById('mode-info-close');
+
+        function showModeInfo(key) {
+            var text = I18n.t(key).replace(/\\n/g, '\n');
+            infoText.textContent = '';
+            var lines = text.split('\n');
+            for (var li = 0; li < lines.length; li++) {
+                if (li > 0) infoText.appendChild(document.createElement('br'));
+                infoText.appendChild(document.createTextNode(lines[li]));
+            }
+            infoPopup.style.display = 'block';
+        }
+
+        document.getElementById('info-standard').addEventListener('click', function() {
+            showModeInfo('info-standard');
+        });
+        document.getElementById('info-wild').addEventListener('click', function() {
+            showModeInfo('info-wild');
+        });
+        infoClose.addEventListener('click', function() {
+            infoPopup.style.display = 'none';
+        });
+        infoPopup.addEventListener('click', function(e) {
+            if (e.target === infoPopup) infoPopup.style.display = 'none';
+        });
+
+        // Leaderboard tab switching (inject tab buttons into leaderboard panel)
+        var lbPanel = document.getElementById('leaderboard-panel');
+        var lbTitle = lbPanel.querySelector('.settings-title');
+        var tabRow = document.createElement('div');
+        tabRow.className = 'lb-tab-row';
+        tabRow.innerHTML = '<button class="lb-tab active" data-mode="standard">' + I18n.t('lb-tab-standard') + '</button>' +
+            '<button class="lb-tab" data-mode="wild">' + I18n.t('lb-tab-wild') + '</button>';
+        lbTitle.insertAdjacentElement('afterend', tabRow);
+
+        function updateLbTabs() {
+            var tabs = tabRow.querySelectorAll('.lb-tab');
+            for (var ti = 0; ti < tabs.length; ti++) {
+                tabs[ti].classList.toggle('active', tabs[ti].getAttribute('data-mode') === lbTabMode);
+            }
+            // Update tab text for i18n
+            tabs[0].textContent = I18n.t('lb-tab-standard');
+            tabs[1].textContent = I18n.t('lb-tab-wild');
+        }
+
+        tabRow.addEventListener('click', function(e) {
+            var btn = e.target.closest('.lb-tab');
+            if (!btn) return;
+            lbTabMode = btn.getAttribute('data-mode');
+            updateLbTabs();
+            loadLeaderboard(lbTabMode);
         });
 
         showMenu();
@@ -521,5 +634,12 @@ var Game = (function() {
 
     window.onload = init;
 
-    return { start: startGame, restart: restart, getState: function() { return state; }, resumeFromMenu: resumeFromMenu };
+    return {
+        start: startGame,
+        startStandard: startStandard,
+        startWild: startWild,
+        restart: restart,
+        getState: function() { return state; },
+        resumeFromMenu: resumeFromMenu
+    };
 })();

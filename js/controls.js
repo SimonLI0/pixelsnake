@@ -4,6 +4,9 @@ var Controls = (function() {
     var touchStartY = 0;
     var touchStartTime = 0;
 
+    // Track input method for fairness
+    var inputMode = 'keyboard'; // 'keyboard' | 'touch'
+
     // D-pad repeat: press-and-hold fires direction repeatedly
     var dpadRepeatTimer = null;
     var DPAD_REPEAT_DELAY = 180; // ms before repeat starts
@@ -37,6 +40,7 @@ var Controls = (function() {
         btn.addEventListener('touchstart', function(e) {
             e.preventDefault();
             e.stopPropagation();
+            inputMode = 'touch';
             btn.classList.add('active');
             startDpadRepeat(dx, dy);
         }, { passive: false });
@@ -53,9 +57,10 @@ var Controls = (function() {
             clearDpadRepeat();
         });
 
-        // Mouse events (for desktop testing)
+        // Mouse events (for desktop testing of D-pad = touch input)
         btn.addEventListener('mousedown', function(e) {
             e.preventDefault();
+            inputMode = 'touch';
             btn.classList.add('active');
             startDpadRepeat(dx, dy);
         });
@@ -78,10 +83,10 @@ var Controls = (function() {
         document.addEventListener('keydown', function(e) {
             if (!snake) return;
             switch(e.key) {
-                case 'ArrowUp':    case 'w': case 'W': snake.setDirection(0, -1); e.preventDefault(); break;
-                case 'ArrowDown':  case 's': case 'S': snake.setDirection(0,  1); e.preventDefault(); break;
-                case 'ArrowLeft':  case 'a': case 'A': snake.setDirection(-1, 0); e.preventDefault(); break;
-                case 'ArrowRight': case 'd': case 'D': snake.setDirection(1,  0); e.preventDefault(); break;
+                case 'ArrowUp':    case 'w': case 'W': inputMode = 'keyboard'; snake.setDirection(0, -1); e.preventDefault(); break;
+                case 'ArrowDown':  case 's': case 'S': inputMode = 'keyboard'; snake.setDirection(0,  1); e.preventDefault(); break;
+                case 'ArrowLeft':  case 'a': case 'A': inputMode = 'keyboard'; snake.setDirection(-1, 0); e.preventDefault(); break;
+                case 'ArrowRight': case 'd': case 'D': inputMode = 'keyboard'; snake.setDirection(1,  0); e.preventDefault(); break;
             }
         });
 
@@ -98,6 +103,7 @@ var Controls = (function() {
                 e.target.tagName === 'A' || e.target.closest('.gb-controls') ||
                 e.target.closest('.ss-container')) return;
             var t = e.touches[0];
+            inputMode = 'touch';
             touchStartX = t.clientX;
             touchStartY = t.clientY;
             touchStartTime = Date.now();
@@ -131,5 +137,9 @@ var Controls = (function() {
         }, { passive: false });
     }
 
-    return { init: init, setSnake: function(s) { snake = s; } };
+    return {
+        init: init,
+        setSnake: function(s) { snake = s; },
+        getInputMode: function() { return inputMode; }
+    };
 })();
