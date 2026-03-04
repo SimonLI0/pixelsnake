@@ -190,6 +190,116 @@ input[type="range"]::-moz-range-thumb {
     opacity: 0.7;
 }
 
+/* Player Info */
+.player-info {
+    font-size: 12px;
+    color: #306230;
+    cursor: pointer;
+    padding: 4px 12px;
+    background: rgba(15, 56, 15, 0.1);
+    border-radius: 4px;
+}
+
+.nick-label {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.nick-label:hover {
+    color: #0F380F;
+}
+
+/* Nickname input */
+.text-input {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 14px;
+    font-family: monospace;
+    background: #0F380F;
+    color: #9BBC0F;
+    border: 2px solid #306230;
+    border-radius: 4px;
+    outline: none;
+}
+
+.text-input::placeholder {
+    color: #4a6a2a;
+}
+
+.text-input:focus {
+    border-color: #9BBC0F;
+}
+
+/* Leaderboard */
+.leaderboard-list {
+    width: 90%;
+    max-height: 55%;
+    overflow-y: auto;
+    background: rgba(15, 56, 15, 0.15);
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.lb-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    font-family: monospace;
+    color: #0F380F;
+}
+
+.lb-table th {
+    padding: 4px 6px;
+    text-align: left;
+    border-bottom: 2px solid #306230;
+    font-size: 10px;
+    color: #306230;
+    text-transform: uppercase;
+}
+
+.lb-table td {
+    padding: 4px 6px;
+    border-bottom: 1px solid rgba(48, 98, 48, 0.2);
+}
+
+.lb-table tr:hover {
+    background: rgba(15, 56, 15, 0.1);
+}
+
+.lb-me {
+    background: rgba(15, 56, 15, 0.2) !important;
+    font-weight: bold;
+}
+
+.lb-loading {
+    text-align: center;
+    padding: 20px;
+    color: #306230;
+    font-size: 13px;
+}
+
+.my-rank {
+    font-size: 12px;
+    color: #0F380F;
+    font-weight: bold;
+    padding: 4px 0;
+}
+
+/* Scrollbar for leaderboard */
+.leaderboard-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.leaderboard-list::-webkit-scrollbar-track {
+    background: rgba(15, 56, 15, 0.1);
+    border-radius: 3px;
+}
+
+.leaderboard-list::-webkit-scrollbar-thumb {
+    background: #306230;
+    border-radius: 3px;
+}
+
 /* Mobile responsive */
 @media (max-width: 480px) {
     .gameboy-shell {

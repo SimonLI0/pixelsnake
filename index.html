@@ -17,9 +17,32 @@
                 <!-- Start Menu Overlay -->
                 <div id="menu-screen" class="overlay">
                     <div class="menu-title">🐍 PIXEL SNAKE</div>
+                    <div id="menu-player-info" class="player-info"></div>
                     <button id="btn-start" class="menu-btn">▶ 开始游戏</button>
+                    <button id="btn-leaderboard" class="menu-btn menu-btn-secondary">🏆 世界排行</button>
                     <button id="btn-settings" class="menu-btn menu-btn-secondary">⚙ 设置</button>
                     <div class="menu-hint">键盘 ← ↑ ↓ → 或触屏滑动</div>
+                </div>
+
+                <!-- Nickname Input Overlay -->
+                <div id="nickname-panel" class="overlay" style="display:none">
+                    <div class="settings-title">👤 设置昵称</div>
+                    <div class="setting-row">
+                        <label>你的名字 (最多16字)</label>
+                        <input type="text" id="input-nickname" maxlength="16" placeholder="Anonymous" class="text-input">
+                    </div>
+                    <button id="btn-save-nick" class="menu-btn">✓ 确认</button>
+                    <button id="btn-cancel-nick" class="menu-btn menu-btn-secondary">← 返回</button>
+                </div>
+
+                <!-- Leaderboard Overlay -->
+                <div id="leaderboard-panel" class="overlay" style="display:none">
+                    <div class="settings-title">🏆 世界排行榜</div>
+                    <div id="leaderboard-list" class="leaderboard-list">
+                        <div class="lb-loading">加载中...</div>
+                    </div>
+                    <div id="my-rank" class="my-rank"></div>
+                    <button id="btn-lb-back" class="menu-btn">← 返回</button>
                 </div>
 
                 <!-- Settings Panel Overlay -->
@@ -63,6 +86,7 @@
     <script src="js/food.js"></script>
     <script src="js/controls.js"></script>
     <script src="js/renderer.js"></script>
+    <script src="js/leaderboard.js"></script>
     <script src="js/game.js"></script>
 </body>
 </html>

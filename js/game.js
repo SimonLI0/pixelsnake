@@ -42,10 +42,60 @@ var Game = (function() {
     function sfxStart() { playBeep(523, 0.1); setTimeout(function(){ playBeep(659, 0.1); }, 100); setTimeout(function(){ playBeep(784, 0.15); }, 200); }
 
     // --- UI Elements ---
-    function showMenu() { document.getElementById('menu-screen').style.display = 'flex'; }
+    function showMenu() {
+        document.getElementById('menu-screen').style.display = 'flex';
+        updatePlayerInfo();
+    }
     function hideMenu() { document.getElementById('menu-screen').style.display = 'none'; }
     function showSettings() { document.getElementById('settings-panel').style.display = 'flex'; }
     function hideSettings() { document.getElementById('settings-panel').style.display = 'none'; }
+    function showLeaderboard() { document.getElementById('leaderboard-panel').style.display = 'flex'; }
+    function hideLeaderboard() { document.getElementById('leaderboard-panel').style.display = 'none'; }
+    function showNickname() { document.getElementById('nickname-panel').style.display = 'flex'; }
+    function hideNickname() { document.getElementById('nickname-panel').style.display = 'none'; }
+
+    function updatePlayerInfo() {
+        var el = document.getElementById('menu-player-info');
+        if (Leaderboard.isRegistered()) {
+            el.innerHTML = '<span class="nick-label" id="nick-display">👤 ' + Leaderboard.getNickname() + '</span>' +
+                ' | 🏅 最高: ' + Leaderboard.getBestScore();
+            document.getElementById('nick-display').addEventListener('click', function() {
+                hideMenu();
+                document.getElementById('input-nickname').value = Leaderboard.getNickname();
+                showNickname();
+            });
+        } else {
+            el.textContent = '⏳ 连接中...';
+        }
+    }
+
+    function loadLeaderboard() {
+        var list = document.getElementById('leaderboard-list');
+        list.innerHTML = '<div class="lb-loading">加载中...</div>';
+        Leaderboard.getLeaderboard(function(err, data) {
+            if (err || !data || !data.leaderboard) {
+                list.innerHTML = '<div class="lb-loading">⚠ 无法加载排行榜</div>';
+                return;
+            }
+            var html = '<table class="lb-table"><tr><th>#</th><th>玩家</th><th>最高分</th><th>场次</th></tr>';
+            var board = data.leaderboard;
+            for (var i = 0; i < board.length; i++) {
+                var row = board[i];
+                var medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+                var isMe = Leaderboard.getDeviceId() && Leaderboard.getDeviceId().substring(0, 6) === row.device_short;
+                html += '<tr' + (isMe ? ' class="lb-me"' : '') + '>' +
+                    '<td>' + medal + '</td>' +
+                    '<td>' + row.nickname + '</td>' +
+                    '<td>' + row.best_score + '</td>' +
+                    '<td>' + row.games_played + '</td></tr>';
+            }
+            html += '</table>';
+            if (board.length === 0) {
+                html = '<div class="lb-loading">暂无记录，快来创造第一个！</div>';
+            }
+            list.innerHTML = html;
+        });
+    }
 
     // --- Canvas Resize ---
     function resizeCanvas(w, h) {
@@ -91,6 +141,12 @@ var Game = (function() {
             clearInterval(gameLoop);
             gameLoop = null;
             sfxDie();
+            // Submit score to leaderboard
+            Leaderboard.submitScore(score, function(err, data) {
+                if (!err && data) {
+                    renderer.drawGameOverWithRank(score, data.rank, data.is_personal_best);
+                }
+            });
             render();
             return;
         }
@@ -144,6 +200,36 @@ var Game = (function() {
             showMenu();
         });
 
+        // Leaderboard buttons
+        document.getElementById('btn-leaderboard').addEventListener('click', function() {
+            hideMenu();
+            loadLeaderboard();
+            showLeaderboard();
+        });
+        document.getElementById('btn-lb-back').addEventListener('click', function() {
+            hideLeaderboard();
+            showMenu();
+        });
+
+        // Nickname buttons
+        document.getElementById('btn-save-nick').addEventListener('click', function() {
+            var name = document.getElementById('input-nickname').value.trim();
+            if (name.length > 0) {
+                Leaderboard.setNickname(name, function() {
+                    hideNickname();
+                    showMenu();
+                });
+            }
+        });
+        document.getElementById('btn-cancel-nick').addEventListener('click', function() {
+            hideNickname();
+            showMenu();
+        });
+        document.getElementById('input-nickname').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('btn-save-nick').click();
+            e.stopPropagation();
+        });
+
         // Settings: screen size
         var sizeSelect = document.getElementById('setting-size');
         sizeSelect.addEventListener('change', function() {
@@ -182,6 +268,11 @@ var Game = (function() {
         });
 
         showMenu();
+
+        // Initialize leaderboard (device fingerprint + registration)
+        Leaderboard.init(function(err, data) {
+            updatePlayerInfo();
+        });
     }
 
     window.onload = init;

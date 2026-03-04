@@ -86,11 +86,42 @@ var Renderer = (function() {
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 28px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('GAME OVER', w/2, h/2 - 20);
+        ctx.fillText('GAME OVER', w/2, h/2 - 30);
 
         ctx.font = '16px monospace';
-        ctx.fillText('Score: ' + score, w/2, h/2 + 15);
-        ctx.fillText('Press ENTER to restart', w/2, h/2 + 50);
+        ctx.fillText('Score: ' + score, w/2, h/2 + 10);
+        ctx.fillText('Press ENTER to restart', w/2, h/2 + 60);
+    };
+
+    Renderer.prototype.drawGameOverWithRank = function(score, rank, isPersonalBest) {
+        var ctx = this.ctx;
+        var w = ctx.canvas.width;
+        var h = ctx.canvas.height;
+
+        ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 28px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('GAME OVER', w/2, h/2 - 50);
+
+        ctx.font = '16px monospace';
+        ctx.fillText('Score: ' + score, w/2, h/2 - 15);
+
+        ctx.fillStyle = '#FFD700';
+        ctx.font = 'bold 18px monospace';
+        ctx.fillText('🏆 World Rank #' + rank, w/2, h/2 + 15);
+
+        if (isPersonalBest) {
+            ctx.fillStyle = '#00FF88';
+            ctx.font = 'bold 14px monospace';
+            ctx.fillText('🎉 NEW PERSONAL BEST!', w/2, h/2 + 40);
+        }
+
+        ctx.fillStyle = '#aaa';
+        ctx.font = '13px monospace';
+        ctx.fillText('Press ENTER to restart', w/2, h/2 + 68);
     };
 
     return Renderer;
