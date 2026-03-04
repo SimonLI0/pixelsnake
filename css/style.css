@@ -138,10 +138,12 @@ canvas {
     transform: scale(0.97);
 }
 
-/* Ensure all overlay buttons have uniform width for centering */
-.overlay > .menu-btn {
-    width: 100%;
-    max-width: 220px;
+/* Ensure ALL menu buttons have identical width for centering */
+#menu-screen .menu-btn,
+#menu-screen .mode-btn-row {
+    width: 220px;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .menu-btn-secondary {
@@ -411,8 +413,6 @@ input[type="range"]::-moz-range-thumb {
     position: relative;
     display: flex;
     align-items: center;
-    width: 100%;
-    max-width: 220px;
 }
 
 .mode-btn {
@@ -679,7 +679,7 @@ input[type="range"]::-moz-range-thumb {
     display: flex;
     justify-content: center;
     gap: 32px;
-    padding: 8px 0 0;
+    padding: 4px 0;
 }
 
 .ss-btn-wrap {
@@ -752,7 +752,7 @@ input[type="range"]::-moz-range-thumb {
 @media (max-width: 480px) {
     body {
         align-items: flex-start;
-        padding-top: 10px;
+        padding-top: 8px;
     }
     .gameboy-shell {
         padding: 8px 10px 12px;
@@ -768,6 +768,10 @@ input[type="range"]::-moz-range-thumb {
         padding: 8px 20px;
         font-size: 14px;
         min-width: 150px;
+    }
+    #menu-screen .menu-btn,
+    #menu-screen .mode-btn-row {
+        width: 200px;
     }
     .settings-title, .gameover-title {
         font-size: 18px;
@@ -789,7 +793,7 @@ input[type="range"]::-moz-range-thumb {
         font-size: 16px;
     }
     .gb-controls {
-        padding: 10px 4px 2px;
+        padding: 12px 4px 2px;
     }
 }
 
