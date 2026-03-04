@@ -41,31 +41,7 @@ body {
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
-/* Language Toggle */
-.lang-toggle {
-    position: absolute;
-    top: 8px;
-    right: 12px;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.55);
-    color: #9bbc0f;
-    border: 2px solid #9bbc0f;
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-size: 13px;
-    font-family: 'Segoe UI', 'PingFang SC', monospace;
-    font-weight: bold;
-    cursor: pointer;
-    letter-spacing: 0.5px;
-    transition: background 0.15s, color 0.15s;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-}
-.lang-toggle:hover,
-.lang-toggle:active {
-    background: #9bbc0f;
-    color: #0f380f;
-}
+/* Language Toggle button removed — now in Settings panel */
 
 /* Game Boy Shell */
 .gameboy-shell {

@@ -2,7 +2,15 @@
 // Internationalization (i18n) Module
 // ==========================================
 var I18n = (function() {
-    var currentLang = 'zh'; // default Chinese
+    // Auto-detect system language: use Chinese for zh-* locales, English otherwise
+    var currentLang = (function() {
+        try {
+            var saved = localStorage.getItem('snake_lang');
+            if (saved === 'zh' || saved === 'en') return saved;
+        } catch(e) {}
+        var nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+        return nav.indexOf('zh') === 0 ? 'zh' : 'en';
+    })();
 
     var translations = {
         zh: {
@@ -47,6 +55,10 @@ var I18n = (function() {
             // Controls
             'btn-pause': '暂停',
             'btn-boost': '加速',
+            // Settings — language
+            'language': '语言',
+            'lang-zh': '中文',
+            'lang-en': 'English',
             // Dynamic (game.js)
             'score-prefix': '🎯 得分: ',
             'rank-prefix': '🏆 世界排名 #',
@@ -96,6 +108,10 @@ var I18n = (function() {
             // Controls
             'btn-pause': 'Pause',
             'btn-boost': 'Boost',
+            // Settings — language
+            'language': 'Language',
+            'lang-zh': '中文',
+            'lang-en': 'English',
             // Dynamic (game.js)
             'score-prefix': '🎯 Score: ',
             'rank-prefix': '🏆 World Rank #',
@@ -138,22 +154,29 @@ var I18n = (function() {
                 els[i].textContent = t(key);
             }
         }
-        // Update toggle button text
-        var btn = document.getElementById('lang-toggle');
-        if (btn) btn.textContent = currentLang === 'zh' ? 'EN' : '中文';
+        // Sync language selector in settings
+        var sel = document.getElementById('setting-lang');
+        if (sel) sel.value = currentLang;
         // Update html lang attribute
         document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
     }
 
-    // Init: load saved preference
-    function init() {
-        try {
-            var saved = localStorage.getItem('snake_lang');
-            if (saved && translations[saved]) currentLang = saved;
-        } catch(e) {}
+    // Init: language already resolved at top (auto-detect + localStorage)
+    // Bind settings dropdown change handler once DOM is ready
+    function bindSettingsLang() {
+        var sel = document.getElementById('setting-lang');
+        if (sel) {
+            sel.value = currentLang;
+            sel.addEventListener('change', function() {
+                setLang(sel.value);
+            });
+        }
     }
-
-    init();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bindSettingsLang);
+    } else {
+        bindSettingsLang();
+    }
 
     return {
         t: t,
