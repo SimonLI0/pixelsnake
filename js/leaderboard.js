@@ -3,12 +3,16 @@
 // ==========================================
 var Leaderboard = (function() {
     var API_URL = (function() {
-        // Auto-detect: if on GitHub Pages, use VPS API; if on VPS, use same host
+        // Auto-detect: if on GitHub Pages, use VPS HTTPS API; if on VPS, use same host
         var host = window.location.hostname;
-        if (host === 'simonli0.github.io' || host === 'localhost' || host === '127.0.0.1') {
-            return 'http://72.61.1.189:3001';
+        if (host === 'simonli0.github.io') {
+            return 'https://72-61-1-189.sslip.io';
         }
-        return window.location.protocol + '//' + window.location.hostname + ':3001';
+        if (host === 'localhost' || host === '127.0.0.1') {
+            return 'http://localhost:3001';
+        }
+        // On VPS (72.61.1.189 or sslip.io domain) — use same origin, nginx proxies /api/
+        return '';
     })();
 
     var deviceId = null;
