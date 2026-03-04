@@ -265,11 +265,13 @@ var Game = (function() {
             clearInterval(gameLoop);
             gameLoop = null;
             sfxDie();
+            Vibration.gameOver();
             // Submit score to leaderboard
             render();
             showGameOver(score, null, false);
             Leaderboard.submitScore(score, function(err, data) {
                 if (!err && data) {
+                    if (data.is_personal_best) Vibration.newRecord();
                     showGameOver(score, data.rank, data.is_personal_best);
                 }
             });
@@ -281,6 +283,7 @@ var Game = (function() {
             snake.grow();
             score += 10;
             sfxEat();
+            Vibration.eatFood();
             food.spawn(snake.body);
         }
 
@@ -549,6 +552,20 @@ var Game = (function() {
                 renderer.clear();
             });
         }
+
+        // Vibration toggle (only shown on supported devices)
+        (function initVibrationSetting() {
+            if (!Vibration.isSupported()) return;
+            var row = document.getElementById('row-vibration');
+            var sel = document.getElementById('setting-vibration');
+            if (!row || !sel) return;
+            row.style.display = 'flex';
+            sel.value = Vibration.isEnabled() ? 'on' : 'off';
+            sel.addEventListener('change', function() {
+                Vibration.setEnabled(this.value === 'on');
+                if (Vibration.isEnabled()) Vibration.eatFood(); // demo pulse
+            });
+        })();
 
         // Enter key to restart after game over, Space to pause
         document.addEventListener('keydown', function(e) {

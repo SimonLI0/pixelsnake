@@ -70,6 +70,10 @@ var I18n = (function() {
             'skin-retro': '复古 NES',
             'skin-dark': '暗黑',
             'skin-ocean': '海洋',
+            // Settings — vibration
+            'vibration': '📳 震动反馈',
+            'vibration-on': '开',
+            'vibration-off': '关',
             // Stats bubble
             'stats-best': '🏅 最高分: ',
             'stats-rank': '🌍 世界排名 #',
@@ -144,6 +148,10 @@ var I18n = (function() {
             'skin-retro': 'Retro NES',
             'skin-dark': 'Dark',
             'skin-ocean': 'Ocean',
+            // Settings — vibration
+            'vibration': '📳 Vibration',
+            'vibration-on': 'ON',
+            'vibration-off': 'OFF',
             // Stats bubble
             'stats-best': '🏅 Best: ',
             'stats-rank': '🌍 World Rank #',

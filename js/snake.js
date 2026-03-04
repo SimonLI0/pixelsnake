@@ -37,6 +37,7 @@ var Snake = (function() {
             if (GAME_MODE === 'wild') {
                 head.x = (head.x + cols) % cols;
                 head.y = (head.y + rows) % rows;
+                if (typeof Vibration !== 'undefined') Vibration.wrapAround();
             } else {
                 this.alive = false;
                 return;
