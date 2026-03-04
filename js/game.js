@@ -59,16 +59,16 @@ var Game = (function() {
     function showNickname() { document.getElementById('nickname-panel').style.display = 'flex'; }
     function hideNickname() { document.getElementById('nickname-panel').style.display = 'none'; }
     function showGameOver(score, rank, isPersonalBest) {
-        document.getElementById('gameover-score').textContent = '🎯 Score: ' + score;
+        document.getElementById('gameover-score').textContent = I18n.t('score-prefix') + score;
         var rankEl = document.getElementById('gameover-rank');
         var bestEl = document.getElementById('gameover-best');
         if (rank) {
-            rankEl.textContent = '🏆 World Rank #' + rank;
+            rankEl.textContent = I18n.t('rank-prefix') + rank;
         } else {
             rankEl.textContent = '';
         }
         if (isPersonalBest) {
-            bestEl.textContent = '🎉 NEW PERSONAL BEST!';
+            bestEl.textContent = I18n.t('personal-best');
         } else {
             bestEl.textContent = '';
         }
@@ -80,26 +80,26 @@ var Game = (function() {
         var el = document.getElementById('menu-player-info');
         if (Leaderboard.isRegistered()) {
             el.innerHTML = '<span class="nick-label" id="nick-display">👤 ' + Leaderboard.getNickname() + '</span>' +
-                ' | 🏅 最高: ' + Leaderboard.getBestScore();
+                I18n.t('best-prefix') + Leaderboard.getBestScore();
             document.getElementById('nick-display').addEventListener('click', function() {
                 hideMenu();
                 document.getElementById('input-nickname').value = Leaderboard.getNickname();
                 showNickname();
             });
         } else {
-            el.textContent = '⏳ 连接中...';
+            el.textContent = I18n.t('connecting');
         }
     }
 
     function loadLeaderboard() {
         var list = document.getElementById('leaderboard-list');
-        list.innerHTML = '<div class="lb-loading">加载中...</div>';
+        list.innerHTML = '<div class="lb-loading">' + I18n.t('loading') + '</div>';
         Leaderboard.getLeaderboard(function(err, data) {
             if (err || !data || !data.leaderboard) {
-                list.innerHTML = '<div class="lb-loading">⚠ 无法加载排行榜</div>';
+                list.innerHTML = '<div class="lb-loading">' + I18n.t('load-error') + '</div>';
                 return;
             }
-            var html = '<table class="lb-table"><tr><th>#</th><th>玩家</th><th>最高分</th><th>场次</th></tr>';
+            var html = '<table class="lb-table"><tr><th>#</th><th>' + I18n.t('th-player') + '</th><th>' + I18n.t('th-best') + '</th><th>' + I18n.t('th-games') + '</th></tr>';
             var board = data.leaderboard;
             for (var i = 0; i < board.length; i++) {
                 var row = board[i];
@@ -113,7 +113,7 @@ var Game = (function() {
             }
             html += '</table>';
             if (board.length === 0) {
-                html = '<div class="lb-loading">暂无记录，快来创造第一个！</div>';
+                html = '<div class="lb-loading">' + I18n.t('no-records') + '</div>';
             }
             list.innerHTML = html;
         });
@@ -500,6 +500,9 @@ var Game = (function() {
         });
 
         showMenu();
+
+        // Apply i18n translations
+        I18n.applyAll();
 
         // Initialize leaderboard (device fingerprint + registration)
         Leaderboard.init(function(err, data) {

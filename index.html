@@ -15,6 +15,8 @@
 </head>
 <body>
     <div id="game-wrapper">
+        <!-- Language Toggle -->
+        <button id="lang-toggle" class="lang-toggle" onclick="I18n.toggle()">EN</button>
         <!-- Game Boy Shell -->
         <div class="gameboy-shell">
             <div class="gameboy-header">DOT MATRIX WITH STEREO SOUND</div>
@@ -24,38 +26,38 @@
                 <!-- Pause Overlay -->
                 <div id="pause-overlay">
                     <div class="pause-text">PAUSED</div>
-                    <div class="pause-hint">按 B 或 START 继续</div>
+                    <div class="pause-hint" data-i18n="pause-hint">按 B 或 START 继续</div>
                 </div>
 
                 <!-- Start Menu Overlay -->
                 <div id="menu-screen" class="overlay">
                     <div class="menu-title">🐍 PIXEL SNAKE</div>
                     <div id="menu-player-info" class="player-info"></div>
-                    <button id="btn-start" class="menu-btn">▶ 开始游戏</button>
-                    <button id="btn-leaderboard" class="menu-btn menu-btn-secondary">🏆 世界排行</button>
-                    <button id="btn-settings" class="menu-btn menu-btn-secondary">⚙ 设置</button>
-                    <div class="menu-hint">D-pad / 键盘 / 触屏滑动控制方向</div>
+                    <button id="btn-start" class="menu-btn" data-i18n="start-game">▶ 开始游戏</button>
+                    <button id="btn-leaderboard" class="menu-btn menu-btn-secondary" data-i18n="leaderboard-btn">🏆 世界排行</button>
+                    <button id="btn-settings" class="menu-btn menu-btn-secondary" data-i18n="settings-btn">⚙ 设置</button>
+                    <div class="menu-hint" data-i18n="menu-hint">D-pad / 键盘 / 触屏滑动控制方向</div>
                 </div>
 
                 <!-- Nickname Input Overlay -->
                 <div id="nickname-panel" class="overlay" style="display:none">
-                    <div class="settings-title">👤 设置昵称</div>
+                    <div class="settings-title" data-i18n="set-nickname">👤 设置昵称</div>
                     <div class="setting-row">
-                        <label>你的名字 (最多16字)</label>
-                        <input type="text" id="input-nickname" maxlength="16" placeholder="Anonymous" class="text-input">
+                        <label data-i18n="your-name">你的名字 (最多16字)</label>
+                        <input type="text" id="input-nickname" maxlength="16" placeholder="Anonymous" class="text-input" data-i18n="name-placeholder" data-i18n-attr="placeholder">
                     </div>
-                    <button id="btn-save-nick" class="menu-btn">✓ 确认</button>
-                    <button id="btn-cancel-nick" class="menu-btn menu-btn-secondary">← 返回</button>
+                    <button id="btn-save-nick" class="menu-btn" data-i18n="confirm">✓ 确认</button>
+                    <button id="btn-cancel-nick" class="menu-btn menu-btn-secondary" data-i18n="back">← 返回</button>
                 </div>
 
                 <!-- Leaderboard Overlay -->
                 <div id="leaderboard-panel" class="overlay" style="display:none">
-                    <div class="settings-title">🏆 世界排行榜</div>
+                    <div class="settings-title" data-i18n="world-leaderboard">🏆 世界排行榜</div>
                     <div id="leaderboard-list" class="leaderboard-list">
-                        <div class="lb-loading">加载中...</div>
+                        <div class="lb-loading" data-i18n="loading">加载中...</div>
                     </div>
                     <div id="my-rank" class="my-rank"></div>
-                    <button id="btn-lb-back" class="menu-btn">← 返回</button>
+                    <button id="btn-lb-back" class="menu-btn" data-i18n="back">← 返回</button>
                 </div>
 
                 <!-- Game Over Overlay -->
@@ -64,41 +66,41 @@
                     <div id="gameover-score" class="gameover-score"></div>
                     <div id="gameover-rank" class="gameover-rank"></div>
                     <div id="gameover-best" class="gameover-best"></div>
-                    <button id="btn-restart" class="menu-btn">▶ 再来一局</button>
-                    <button id="btn-go-settings" class="menu-btn menu-btn-secondary">⚙ 设置</button>
-                    <button id="btn-go-home" class="menu-btn menu-btn-secondary">🏠 回到首页</button>
+                    <button id="btn-restart" class="menu-btn" data-i18n="play-again">▶ 再来一局</button>
+                    <button id="btn-go-settings" class="menu-btn menu-btn-secondary" data-i18n="go-settings">⚙ 设置</button>
+                    <button id="btn-go-home" class="menu-btn menu-btn-secondary" data-i18n="go-home">🏠 回到首页</button>
                 </div>
 
                 <!-- Settings Panel Overlay -->
                 <div id="settings-panel" class="overlay" style="display:none">
-                    <div class="settings-title">⚙ 设置</div>
+                    <div class="settings-title" data-i18n="settings-title">⚙ 设置</div>
                     
                     <div class="setting-row">
-                        <label>屏幕尺寸</label>
+                        <label data-i18n="screen-size">屏幕尺寸</label>
                         <select id="setting-size">
-                            <option value="256x256">小 (256×256)</option>
-                            <option value="320x320" selected>中 (320×320)</option>
-                            <option value="480x480">大 (480×480)</option>
-                            <option value="640x640">超大 (640×640)</option>
+                            <option value="256x256" data-i18n="size-256">小 (256×256)</option>
+                            <option value="320x320" selected data-i18n="size-320">中 (320×320)</option>
+                            <option value="480x480" data-i18n="size-480">大 (480×480)</option>
+                            <option value="640x640" data-i18n="size-640">超大 (640×640)</option>
                         </select>
                     </div>
 
                     <div class="setting-row">
-                        <label>游戏速度</label>
+                        <label data-i18n="game-speed">游戏速度</label>
                         <select id="setting-speed">
-                            <option value="160">慢速</option>
-                            <option value="120" selected>正常</option>
-                            <option value="80">快速</option>
-                            <option value="50">地狱</option>
+                            <option value="160" data-i18n="speed-160">慢速</option>
+                            <option value="120" selected data-i18n="speed-120">正常</option>
+                            <option value="80" data-i18n="speed-80">快速</option>
+                            <option value="50" data-i18n="speed-50">地狱</option>
                         </select>
                     </div>
 
                     <div class="setting-row">
-                        <label>音量 <span id="volume-value">50%</span></label>
+                        <label><span data-i18n="volume">音量</span> <span id="volume-value">50%</span></label>
                         <input type="range" id="setting-volume" min="0" max="1" step="0.05" value="0.5">
                     </div>
 
-                    <button id="btn-back" class="menu-btn">← 返回</button>
+                    <button id="btn-back" class="menu-btn" data-i18n="back">← 返回</button>
                 </div>
             </div>
 
@@ -120,11 +122,11 @@
                     <div class="ab-buttons">
                         <div class="ab-btn-wrap">
                             <button class="gb-round-btn btn-b" id="btn-B" aria-label="B">B</button>
-                            <span class="ab-label">暂停</span>
+                            <span class="ab-label" data-i18n="btn-pause">暂停</span>
                         </div>
                         <div class="ab-btn-wrap">
                             <button class="gb-round-btn btn-a" id="btn-A" aria-label="A">A</button>
-                            <span class="ab-label">加速</span>
+                            <span class="ab-label" data-i18n="btn-boost">加速</span>
                         </div>
                     </div>
                 </div>
@@ -146,6 +148,7 @@
 
     <script src="js/utils/constants.js"></script>
     <script src="js/utils/helpers.js"></script>
+    <script src="js/utils/i18n.js"></script>
     <script src="js/snake.js"></script>
     <script src="js/food.js"></script>
     <script src="js/controls.js"></script>
