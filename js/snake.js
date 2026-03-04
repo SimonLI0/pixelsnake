@@ -25,15 +25,22 @@ var Snake = (function() {
 
     Snake.prototype.update = function() {
         this.direction = this.nextDirection;
+        var cols = gridCols();
+        var rows = gridRows();
         var head = {
             x: this.body[0].x + this.direction.x,
             y: this.body[0].y + this.direction.y
         };
 
-        // Wall collision
-        if (head.x < 0 || head.x >= gridCols() || head.y < 0 || head.y >= gridRows()) {
-            this.alive = false;
-            return;
+        // Wall collision: wild mode wraps around, standard mode dies
+        if (head.x < 0 || head.x >= cols || head.y < 0 || head.y >= rows) {
+            if (GAME_MODE === 'wild') {
+                head.x = (head.x + cols) % cols;
+                head.y = (head.y + rows) % rows;
+            } else {
+                this.alive = false;
+                return;
+            }
         }
 
         // Self collision
