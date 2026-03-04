@@ -53,6 +53,23 @@ var Game = (function() {
     function hideLeaderboard() { document.getElementById('leaderboard-panel').style.display = 'none'; }
     function showNickname() { document.getElementById('nickname-panel').style.display = 'flex'; }
     function hideNickname() { document.getElementById('nickname-panel').style.display = 'none'; }
+    function showGameOver(score, rank, isPersonalBest) {
+        document.getElementById('gameover-score').textContent = '🎯 Score: ' + score;
+        var rankEl = document.getElementById('gameover-rank');
+        var bestEl = document.getElementById('gameover-best');
+        if (rank) {
+            rankEl.textContent = '🏆 World Rank #' + rank;
+        } else {
+            rankEl.textContent = '';
+        }
+        if (isPersonalBest) {
+            bestEl.textContent = '🎉 NEW PERSONAL BEST!';
+        } else {
+            bestEl.textContent = '';
+        }
+        document.getElementById('gameover-panel').style.display = 'flex';
+    }
+    function hideGameOver() { document.getElementById('gameover-panel').style.display = 'none'; }
 
     function updatePlayerInfo() {
         var el = document.getElementById('menu-player-info');
@@ -108,6 +125,56 @@ var Game = (function() {
         canvas.style.height = h + 'px';
     }
 
+    // --- Mobile auto-sizing ---
+    function detectBestSize() {
+        // On mobile, pick a canvas size that fits the viewport
+        var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+                       (window.innerWidth <= 640 && 'ontouchstart' in window);
+        if (!isMobile) return;
+
+        // Available space: viewport minus gameboy shell overhead (~80px padding + bezel)
+        var shellPad = 60; // approximate total vertical padding from shell + bezel
+        var availW = window.innerWidth - shellPad;
+        var availH = window.innerHeight - shellPad - 40; // extra margin
+        var avail = Math.min(availW, availH);
+
+        var bestSize = 256;
+        if (avail >= 640) bestSize = 640;
+        else if (avail >= 480) bestSize = 480;
+        else if (avail >= 320) bestSize = 320;
+        else bestSize = 256;
+
+        resizeCanvas(bestSize, bestSize);
+        if (renderer) {
+            renderer = new Renderer(ctx);
+            renderer.clear();
+        }
+
+        // Update size selector to match
+        var sizeSelect = document.getElementById('setting-size');
+        if (sizeSelect) sizeSelect.value = bestSize + 'x' + bestSize;
+    }
+
+    // --- Fit game to screen (CSS scaling) ---
+    function fitToScreen() {
+        var shell = document.querySelector('.gameboy-shell');
+        if (!shell) return;
+        // Reset transform first
+        shell.style.transform = '';
+        shell.style.transformOrigin = 'center center';
+
+        var shellRect = shell.getBoundingClientRect();
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
+        // Only scale down, never up
+        var scaleX = vw / shellRect.width;
+        var scaleY = vh / shellRect.height;
+        var scale = Math.min(scaleX, scaleY, 1);
+        if (scale < 0.98) {
+            shell.style.transform = 'scale(' + scale.toFixed(3) + ')';
+        }
+    }
+
     // --- Core Game ---
     var controlsInitialized = false;
 
@@ -124,6 +191,7 @@ var Game = (function() {
         }
         hideMenu();
         hideSettings();
+        hideGameOver();
         state = 'playing';
         if (gameLoop) clearInterval(gameLoop);
         gameLoop = setInterval(tick, GAME_SPEED);
@@ -142,12 +210,13 @@ var Game = (function() {
             gameLoop = null;
             sfxDie();
             // Submit score to leaderboard
+            render();
+            showGameOver(score, null, false);
             Leaderboard.submitScore(score, function(err, data) {
                 if (!err && data) {
-                    renderer.drawGameOverWithRank(score, data.rank, data.is_personal_best);
+                    showGameOver(score, data.rank, data.is_personal_best);
                 }
             });
-            render();
             return;
         }
 
@@ -167,12 +236,11 @@ var Game = (function() {
         renderer.drawSnake(snake);
         renderer.drawFood(food);
         renderer.drawScore(score);
-        if (state === 'gameover') {
-            renderer.drawGameOver(score);
-        }
+        // Game over overlay is now HTML-based, no canvas drawing needed
     }
 
     function restart() {
+        hideGameOver();
         startGame();
     }
 
@@ -186,8 +254,29 @@ var Game = (function() {
         canvas.style.height = CANVAS_HEIGHT + 'px';
         renderer = new Renderer(ctx);
 
+        // Auto-detect best canvas size for mobile
+        detectBestSize();
+
         // Draw initial background on canvas
         renderer.clear();
+
+        // Fit to screen on load and resize/orientation change
+        setTimeout(fitToScreen, 50);
+        window.addEventListener('resize', function() {
+            setTimeout(fitToScreen, 100);
+        });
+        window.addEventListener('orientationchange', function() {
+            setTimeout(fitToScreen, 300);
+        });
+
+        // WeChat / iOS: resume audio context on first user gesture
+        var resumeAudio = function() {
+            initAudio();
+            document.removeEventListener('touchstart', resumeAudio);
+            document.removeEventListener('click', resumeAudio);
+        };
+        document.addEventListener('touchstart', resumeAudio, { passive: true });
+        document.addEventListener('click', resumeAudio);
 
         // Button bindings
         document.getElementById('btn-start').addEventListener('click', startGame);
@@ -208,6 +297,19 @@ var Game = (function() {
         });
         document.getElementById('btn-lb-back').addEventListener('click', function() {
             hideLeaderboard();
+            showMenu();
+        });
+
+        // Game Over buttons
+        document.getElementById('btn-restart').addEventListener('click', function() {
+            restart();
+        });
+        document.getElementById('btn-go-settings').addEventListener('click', function() {
+            hideGameOver();
+            showSettings();
+        });
+        document.getElementById('btn-go-home').addEventListener('click', function() {
+            hideGameOver();
             showMenu();
         });
 
@@ -237,6 +339,7 @@ var Game = (function() {
             resizeCanvas(parseInt(parts[0]), parseInt(parts[1]));
             renderer = new Renderer(ctx);
             renderer.clear();
+            setTimeout(fitToScreen, 50);
         });
 
         // Settings: speed

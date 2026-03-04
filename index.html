@@ -2,7 +2,14 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <!-- WeChat / Open Graph sharing -->
+    <meta property="og:title" content="Pixel Snake - Game Boy 风格贪吃蛇">
+    <meta property="og:description" content="经典 Game Boy 像素风贪吃蛇，支持世界排行榜！">
+    <meta property="og:type" content="website">
     <title>Pixel Snake Game</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -43,6 +50,17 @@
                     </div>
                     <div id="my-rank" class="my-rank"></div>
                     <button id="btn-lb-back" class="menu-btn">← 返回</button>
+                </div>
+
+                <!-- Game Over Overlay -->
+                <div id="gameover-panel" class="overlay" style="display:none">
+                    <div class="gameover-title">GAME OVER</div>
+                    <div id="gameover-score" class="gameover-score"></div>
+                    <div id="gameover-rank" class="gameover-rank"></div>
+                    <div id="gameover-best" class="gameover-best"></div>
+                    <button id="btn-restart" class="menu-btn">▶ 再来一局</button>
+                    <button id="btn-go-settings" class="menu-btn menu-btn-secondary">⚙ 设置</button>
+                    <button id="btn-go-home" class="menu-btn menu-btn-secondary">🏠 回到首页</button>
                 </div>
 
                 <!-- Settings Panel Overlay -->
